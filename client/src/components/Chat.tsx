@@ -18,6 +18,8 @@ import { getColorByString } from '../util'
 import { useAppDispatch, useAppSelector } from '../hooks'
 import { MessageType, setFocused, setShowChat } from '../stores/ChatStore'
 
+import {RPC} from 'playroomkit'
+
 const Backdrop = styled.div`
   position: fixed;
   bottom: 60px;
@@ -124,7 +126,7 @@ const dateFormatter = new Intl.DateTimeFormat('en', {
   dateStyle: 'short',
 })
 
-const Message = ({ chatMessage, messageType }) => {
+  const Message = ({ chatMessage, messageType }) => {
   const [tooltipOpen, setTooltipOpen] = useState(false)
 
   return (
@@ -201,10 +203,26 @@ export default function Chat() {
     const val = inputValue.trim()
     setInputValue('')
     if (val) {
-      game.network.addChatMessage(val)
+      // game.network.addChatMessage(val)
+      RPC.call("chat-message", {content: val},RPC.Mode.ALL)
       game.myPlayer.updateDialogBubble(val)
     }
   }
+    useEffect(() => {
+    RPC.register("chat-message", async (data, sender) => {
+    dispatch({
+      type: "ADD_CHAT_MESSAGE",
+      payload: {
+        messageType: MessageType.REGULAR_MESSAGE,
+        chatMessage: {
+          author: sender.id,
+          content: data.content,
+          createdAt: new Date(), 
+        },
+        },
+    })
+    })
+    }, [dispatch])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
