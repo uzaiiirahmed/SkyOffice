@@ -16,6 +16,8 @@ import { NavKeys } from '../../../types/KeyboardState'
 import { JoystickMovement } from '../components/Joystick'
 import { openURL } from '../utils/helpers'
 
+import { myPlayer } from 'playroomkit'
+
 export default class MyPlayer extends Player {
   private playContainerBody: Phaser.Physics.Arcade.Body
   private chairOnSit?: Chair
@@ -115,6 +117,20 @@ export default class MyPlayer extends Player {
               }
               // send new location and anim to server
               network.updatePlayer(this.x, this.y, this.anims.currentAnim.key)
+
+              // updating using PRK
+              const player = myPlayer()
+              player.setState("x", this.x)
+              player.setState("y", this.y)
+              player.setState("anim", this.anims.currentAnim.key)
+
+              console.log(
+                "PlayroomKit state:",
+                player.getState("x"),
+                player.getState("y"),
+                player.getState("anim")
+              )
+
             },
             loop: false,
           })
@@ -159,6 +175,24 @@ export default class MyPlayer extends Player {
         this.playContainerBody.setVelocity(vx, vy)
         this.playContainerBody.velocity.setLength(speed)
 
+
+        if (vx !== 0 || vy !== 0) {
+          network.updatePlayer(this.x, this.y, this.anims.currentAnim.key)
+
+          // updating using PRK
+          const player = myPlayer()
+          player.setState("x", this.x)
+          player.setState("y", this.y)
+          player.setState("anim", this.anims.currentAnim.key)
+
+          console.log(
+            "PlayroomKit state:",
+            player.getState("x"),
+            player.getState("y"),
+            player.getState("anim")
+          )
+        }
+
         // update animation according to velocity and send new location and anim to server
         if (vx !== 0 || vy !== 0) network.updatePlayer(this.x, this.y, this.anims.currentAnim.key)
         if (vx > 0) {
@@ -178,6 +212,12 @@ export default class MyPlayer extends Player {
             this.play(parts.join('_'), true)
             // send new location and anim to server
             network.updatePlayer(this.x, this.y, this.anims.currentAnim.key)
+
+            // updating using PRK
+            const player = myPlayer()
+            player.setState("x", this.x)
+            player.setState("y", this.y)
+            player.setState("anim", this.anims.currentAnim.key)
           }
         }
         break
@@ -193,6 +233,12 @@ export default class MyPlayer extends Player {
           playerSelector.setPosition(this.x, this.y)
           playerSelector.update(this, cursors)
           network.updatePlayer(this.x, this.y, this.anims.currentAnim.key)
+
+          // updating using PRK
+          const player = myPlayer()
+          player.setState("x", this.x)
+          player.setState("y", this.y)
+          player.setState("anim", this.anims.currentAnim.key)
         }
         break
     }
