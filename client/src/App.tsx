@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useEffect } from 'react'
+import { insertCoin } from 'playroomkit'
 
 import { useAppSelector } from './hooks'
 
@@ -11,6 +13,7 @@ import VideoConnectionDialog from './components/VideoConnectionDialog'
 import Chat from './components/Chat'
 import HelperButtonGroup from './components/HelperButtonGroup'
 import MobileVirtualJoystick from './components/MobileVirtualJoystick'
+import { use } from 'matter'
 
 const Backdrop = styled.div`
   position: absolute;
@@ -51,6 +54,29 @@ function App() {
     /* Render RoomSelectionDialog if yet selected a room. */
     ui = <RoomSelectionDialog />
   }
+
+  useEffect(() => {
+    let mounted = true 
+    const connect = async () => {
+      try{
+        await insertCoin ({
+          gameId: 'skyoffice',
+          maxPlayersPerRoom: 10,
+          
+        })
+        if (mounted) {
+          console.log('Connected to PlayroomKit matchmaking service')
+        }
+      } catch (error) {
+        console.error('Failed to connect to PlayroomKit matchmaking service:', error)
+      }
+    }
+    connect()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
 
   return (
     <Backdrop>
