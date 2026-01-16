@@ -20,6 +20,7 @@ import {
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
 import { setWhiteboardUrls } from '../stores/WhiteboardStore'
+import { insertCoin, myPlayer, onPlayerJoin } from 'playroomkit'
 
 export default class Network {
   private client: Client
@@ -29,13 +30,25 @@ export default class Network {
 
   mySessionId!: string
 
+  // create a dictionary OR map OR Object to maintain ALL connected PLAYERS in the ROOM
+  // when a new player joins, add to the object 
+  // for player movement + animations:
+    // movement: 
+
   constructor() {
     const protocol = window.location.protocol.replace('http', 'ws')
     const endpoint =
       process.env.NODE_ENV === 'production'
         ? import.meta.env.VITE_SERVER_URL
         : `${protocol}//${window.location.hostname}:2567`
-    this.client = new Client(endpoint)
+    this.client = new Client('')
+
+    insertCoin({ roomCode: '123', matchmaking: false }, () => {
+      onPlayerJoin((player) => {
+        console.log(player)
+      })
+    });
+
     this.joinLobbyRoom().then(() => {
       store.dispatch(setLobbyJoined(true))
     })
@@ -116,6 +129,8 @@ export default class Network {
           }
         })
       }
+
+      console.warn(this.room?.state.players)
     }
 
     // an instance removed from the players MapSchema
@@ -233,7 +248,11 @@ export default class Network {
 
   // method to send player updates to Colyseus server
   updatePlayer(currentX: number, currentY: number, currentAnim: string) {
-    this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
+    // this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
+
+    // myPlayer().setState("pos", { x: currentX, y: currentY, anim: currentAnim })
+
+    // TODO FOR UZIAR: USE PLAYEROOMS MY PLAYER TO SET STATE (POSTIION)
   }
 
   // method to send player name to Colyseus server
