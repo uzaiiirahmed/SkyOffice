@@ -41,6 +41,9 @@
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "phaser": "^3.55.2",
+    "playroomkit": "^0.0.95",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "regenerator-runtime": "^0.13.7",
     "typescript": "^4.8.2"
   }
