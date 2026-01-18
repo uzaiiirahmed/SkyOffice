@@ -20,7 +20,7 @@ import {
   pushPlayerLeftMessage,
 } from '../stores/ChatStore'
 import { setWhiteboardUrls } from '../stores/WhiteboardStore'
-import { insertCoin, myPlayer, onPlayerJoin } from 'playroomkit'
+import { insertCoin, myPlayer, onPlayerJoin , getState, RPC  } from 'playroomkit'
 import MyPlayer from '../characters/MyPlayer'
 import Player from '../characters/Player'
 
@@ -45,7 +45,7 @@ export default class Network {
         : `${protocol}//${window.location.hostname}:2567`
     this.client = new Client(endpoint)
 
-    const playersDict ={} 
+    const playersDict: Record<string, any> = {}
 
     insertCoin({ roomCode: '123', matchmaking: false }, () => {
       onPlayerJoin((player) => {
@@ -53,6 +53,22 @@ export default class Network {
         console.log(player.id + 'joined via PlayroomKit' )
       });
     });
+
+    RPC.register("PLAYER_MOVE", async (data, fromPlayer) => {
+  const { x, y, anim } = data
+
+  if (fromPlayer.id === myPlayer().id) return
+
+  phaserEvents.emit(
+    Event.PLAYER_UPDATED,
+    "pos",
+    { x, y, anim },
+    fromPlayer.id
+  )
+})
+
+
+    
 
     this.joinLobbyRoom().then(() => {
       store.dispatch(setLobbyJoined(true))
@@ -246,28 +262,29 @@ export default class Network {
   
 
   
-  // method to send player updates to Colyseus server
+  // method to send player updates to Colyseus server||| PlaYROOMKIT
   updatePlayer(currentX: number, currentY: number, currentAnim: string) {
-    // this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
 
-    myPlayer().setState("pos", { x: currentX, y: currentY, anim: currentAnim })
+     // this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
+  myPlayer().setState("pos", {
+    x: currentX,
+    y: currentY,
+    anim: currentAnim,
+  })
+  RPC.call("PLAYER_MOVE", {
+    x: currentX,
+    y: currentY,
+    anim: currentAnim,
+  })
+}
 
-    // TODO FOR UZIAR: USE PLAYEROOMS MY PLAYER TO SET STATE (POSTIION)
-  }
 
   // method to register event listener and call back function when a player updated
   onPlayerUpdated(
     callback: (field: string, value: number | string, key: string) => void,
     context?: any
   ) {
-    // phaserEvents.on(Event.PLAYER_UPDATED, callback, context)
-
-    const getPosition = myPlayer().getState("pos")
-    if (getPosition) {
-      console.log("getPosition:"+myPlayer.name + "Position Updated")
-    }
-    
-
+    phaserEvents.on(Event.PLAYER_UPDATED, callback, context) 
   }
 
   // method to send player name to Colyseus server

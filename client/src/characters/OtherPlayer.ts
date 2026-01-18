@@ -46,45 +46,32 @@ export default class OtherPlayer extends Player {
     }
   }
 
-  updateOtherPlayer(field: string, value: number | string | boolean) {
-    switch (field) {
-      case 'name':
-        if (typeof value === 'string') {
-          this.playerName.setText(value)
-        }
-        break
+  updateOtherPlayer(field: string, value: string | number | boolean) {
+  switch (field) {
+    case 'name':
+      if (typeof value === 'string') this.playerName.setText(value)
+      break
 
-      case 'x':
-        if (typeof value === 'number') {
-          this.targetPosition[0] = value
-        }
-        break
+    case 'pos':
+      
+      if (typeof value === 'object' && value !== null && 'x' in value && 'y' in value) {
+        const pos = value as { x: number; y: number; anim?: string }
+        this.targetPosition[0] = pos.x
+        this.targetPosition[1] = pos.y
+        if (pos.anim) this.anims.play(pos.anim, true)
+      }
+      break
 
-      case 'y':
-        if (typeof value === 'number') {
-          this.targetPosition[1] = value
-        }
-        break
+    case 'readyToConnect':
+      if (typeof value === 'boolean') this.readyToConnect = value
+      break
 
-      case 'anim':
-        if (typeof value === 'string') {
-          this.anims.play(value, true)
-        }
-        break
-
-      case 'readyToConnect':
-        if (typeof value === 'boolean') {
-          this.readyToConnect = value
-        }
-        break
-
-      case 'videoConnected':
-        if (typeof value === 'boolean') {
-          this.videoConnected = value
-        }
-        break
-    }
+    case 'videoConnected':
+      if (typeof value === 'boolean') this.videoConnected = value
+      break
   }
+}
+
 
   destroy(fromScene?: boolean) {
     this.playerContainer.destroy()
