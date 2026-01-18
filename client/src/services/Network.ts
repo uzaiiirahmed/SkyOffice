@@ -21,6 +21,8 @@ import {
 } from '../stores/ChatStore'
 import { setWhiteboardUrls } from '../stores/WhiteboardStore'
 import { insertCoin, myPlayer, onPlayerJoin } from 'playroomkit'
+import MyPlayer from '../characters/MyPlayer'
+import Player from '../characters/Player'
 
 export default class Network {
   private client: Client
@@ -41,12 +43,15 @@ export default class Network {
       process.env.NODE_ENV === 'production'
         ? import.meta.env.VITE_SERVER_URL
         : `${protocol}//${window.location.hostname}:2567`
-    this.client = new Client('')
+    this.client = new Client(endpoint)
+
+    const playersDict ={} 
 
     insertCoin({ roomCode: '123', matchmaking: false }, () => {
       onPlayerJoin((player) => {
-        console.log(player)
-      })
+        playersDict[player.id] = player
+        console.log(player.id + 'joined via PlayroomKit' )
+      });
     });
 
     this.joinLobbyRoom().then(() => {
@@ -238,21 +243,31 @@ export default class Network {
     phaserEvents.on(Event.MY_PLAYER_VIDEO_CONNECTED, callback, context)
   }
 
+  
+
+  
+  // method to send player updates to Colyseus server
+  updatePlayer(currentX: number, currentY: number, currentAnim: string) {
+    // this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
+
+    myPlayer().setState("pos", { x: currentX, y: currentY, anim: currentAnim })
+
+    // TODO FOR UZIAR: USE PLAYEROOMS MY PLAYER TO SET STATE (POSTIION)
+  }
+
   // method to register event listener and call back function when a player updated
   onPlayerUpdated(
     callback: (field: string, value: number | string, key: string) => void,
     context?: any
   ) {
-    phaserEvents.on(Event.PLAYER_UPDATED, callback, context)
-  }
+    // phaserEvents.on(Event.PLAYER_UPDATED, callback, context)
 
-  // method to send player updates to Colyseus server
-  updatePlayer(currentX: number, currentY: number, currentAnim: string) {
-    // this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
+    const getPosition = myPlayer().getState("pos")
+    if (getPosition) {
+      console.log("getPosition:"+myPlayer.name + "Position Updated")
+    }
+    
 
-    // myPlayer().setState("pos", { x: currentX, y: currentY, anim: currentAnim })
-
-    // TODO FOR UZIAR: USE PLAYEROOMS MY PLAYER TO SET STATE (POSTIION)
   }
 
   // method to send player name to Colyseus server
