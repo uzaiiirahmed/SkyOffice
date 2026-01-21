@@ -482,4 +482,124 @@ export const createCharacterAnims = (anims: Phaser.Animations.AnimationManager) 
     repeat: 0,
     frameRate: animsFrameRate,
   })
+
+  anims.create({
+    key: 'phibi_idle_right',
+    frames: anims.generateFrameNames('phibi', {
+      start: 0,
+      end: 5,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'phibi_idle_up',
+    frames: anims.generateFrameNames('phibi', {
+      start: 6,
+      end: 11,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'phibi_idle_left',
+    frames: anims.generateFrameNames('phibi', {
+      start: 12,
+      end: 17,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'phibi_idle_down',
+    frames: anims.generateFrameNames('phibi', {
+      start: 18,
+      end: 23,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate * 0.6,
+  })
+
+  anims.create({
+    key: 'phibi_run_right',
+    frames: anims.generateFrameNames('phibi', {
+      start: 24,
+      end: 29,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'phibi_run_up',
+    frames: anims.generateFrameNames('phibi', {
+      start: 30,
+      end: 35,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'phibi_run_left',
+    frames: anims.generateFrameNames('phibi', {
+      start: 36,
+      end: 41,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'phibi_run_down',
+    frames: anims.generateFrameNames('phibi', {
+      start: 42,
+      end: 47,
+    }),
+    repeat: -1,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'phibi_sit_down',
+    frames: anims.generateFrameNames('phibi', {
+      start: 48,
+      end: 48,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'phibi_sit_left',
+    frames: anims.generateFrameNames('phibi', {
+      start: 49,
+      end: 49,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'phibi_sit_right',
+    frames: anims.generateFrameNames('phibi', {
+      start: 50,
+      end: 50,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
+
+  anims.create({
+    key: 'phibi_sit_up',
+    frames: anims.generateFrameNames('phibi', {
+      start: 51,
+      end: 51,
+    }),
+    repeat: 0,
+    frameRate: animsFrameRate,
+  })
 }
