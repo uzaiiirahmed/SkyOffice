@@ -22,6 +22,7 @@ import store from '../stores'
 import { setFocused, setShowChat } from '../stores/ChatStore'
 import { NavKeys, Keyboard } from '../../../types/KeyboardState'
 import { getState } from 'playroomkit'
+import { ConstructionOutlined } from '@mui/icons-material'
 
 export default class Game extends Phaser.Scene {
   network!: Network
@@ -286,8 +287,25 @@ export default class Game extends Phaser.Scene {
     if (this.myPlayer && this.network) {
       this.playerSelector.update(this.myPlayer, this.cursors)
       this.myPlayer.update(this.playerSelector, this.cursors, this.keyE, this.keyR, this.network)
-      const updatedPos = getState("pos")
+      
+      // let updatedPlayroomPOsition = getState("pos")
+      // if(updatedPlayroomPOsition){
+      
+      //     console.log(updatedPlayroomPOsition)
+      //     this.myPlayer.x = updatedPlayroomPOsition.x
+      //     this.myPlayer.y = updatedPlayroomPOsition.y
+      //     this.myPlayer.anims.play(updatedPlayroomPOsition.anim, true)
+          
 
+      // }
+
+      let _s2ndPosition = getState("Spos")
+      if(_s2ndPosition){
+        console.log(_s2ndPosition)
+        this.myPlayer.x=_s2ndPosition.x
+        this.myPlayer.y=_s2ndPosition.y
+        this.myPlayer.anims.play(_s2ndPosition.anim, true)
+      }
     }
   }
 }

@@ -7,7 +7,7 @@ import WebRTC from '../web/WebRTC'
 import { phaserEvents, Event } from '../events/EventCenter'
 import store from '../stores'
 import { setSessionId, setPlayerNameMap, removePlayerNameMap } from '../stores/UserStore'
-import {onPlayerJoin, insertCoin, isHost ,myPlayer ,setState ,getState} from 'playroomkit'
+import {onPlayerJoin, insertCoin, isHost ,myPlayer ,setState ,getState, PlayerState} from 'playroomkit'
 import {
   setLobbyJoined,
   setJoinedRoomData,
@@ -43,12 +43,16 @@ export default class Network {
     })
 
 
-    // insertCoin(( setma ) => {
+    const playersDict: Record<string,PlayerState> = {}
 
-    //   console.log("InsertCoin Called")
+    insertCoin({ roomCode: '123', matchmaking: false }, () => {
+      onPlayerJoin((player) => {
+        playersDict[player.id] = player
+        console.log(player.id + 'joined via PlayroomKit' )
+      });
+    });
+    
 
-    //   });
-    //onPlayerJoin(playerState => this.room.state.players.onAdd(playerState));
 
     phaserEvents.on(Event.MY_PLAYER_NAME_CHANGE, this.updatePlayerName, this)
     phaserEvents.on(Event.MY_PLAYER_TEXTURE_CHANGE, this.updatePlayer, this)
@@ -243,8 +247,9 @@ export default class Network {
 
   // method to send player updates to Colyseus server
   updatePlayer(currentX: number, currentY: number, currentAnim: string) {
-    this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
-    setState("pos",{ x: currentX, y: currentY, anim: currentAnim})
+    //this.room?.send(Message.UPDATE_PLAYER, { x: currentX, y: currentY, anim: currentAnim })
+    myPlayer().setState("pos",{ x: currentX, y: currentY, anim: currentAnim})
+    setState("Spos",{ x: currentX, y: currentY, anim: currentAnim})
   }
 
   // method to send player name to Colyseus server
